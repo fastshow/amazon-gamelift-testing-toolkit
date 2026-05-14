@@ -1,4 +1,5 @@
-FROM amazonlinux:2023
+# Stage 1: Build — .NET SDK + git to compile and publish the game
+FROM amazonlinux:2023 AS builder
 RUN dnf install -y 'dnf-command(config-manager)'
 RUN mkdir /local/game
 WORKDIR /local/game/
@@ -14,4 +15,11 @@ RUN dotnet publish SampleGameBuild.csproj -c Release -r linux-x64 --self-contain
 cp /local/game/DLL/*.dll /local/game/publish/ ;\
 cp /local/game/log4net.config /local/game/publish/ ;\
 cp /local/game/QuizConfig.json /local/game/publish/
+
+# Stage 2: Runtime — minimal image with only the self-contained publish output
+FROM amazonlinux:2023
+RUN dnf install -y openssl-libs libicu && dnf clean all
+RUN mkdir -p /local/game
+WORKDIR /local/game
+COPY --from=builder /local/game/publish/ /local/game/
 CMD tail -f
