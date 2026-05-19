@@ -93,11 +93,19 @@ export class FleetGraphPopup extends Popup
     {
         let configObj = Game.game.cache.json.get("configJson");
 
+        let metric = (this.element.find("#metric")[0] as HTMLInputElement).value;
+
+        // Per GameLift console: percent and per-location config metrics use Average; all others use Sum
+        let averageMetrics = ["PercentHealthyServerProcesses", "DesiredInstances", "MinInstances", "MaxInstances"];
+        let stat = averageMetrics.indexOf(metric) !== -1 ? "Average" : "Sum";
+
         var image = {
             "view": "timeSeries",
             "stacked": false,
+            "stat": stat,
+            "period": 60,
             "metrics": [
-                [ "AWS/GameLift", (this.element.find("#metric")[0] as HTMLInputElement).value, "FleetId", this._fleetConfigData.FleetId ]
+                [ "AWS/GameLift", metric, "FleetId", this._fleetConfigData.FleetId, "Location", this._fleetConfigData.FleetUtilization.Location ]
             ],
             "region": configObj.Region,
             "start" : (this.element.find("#timeperiod")[0] as HTMLInputElement).value

@@ -194,15 +194,6 @@ export class Fleet extends BaseContainer
 
     updateStatsText()
     {
-        let gameSessionStats={"ACTIVE":0, "TERMINATED":0, "TOTAL":0};
-        this._fleet.GameSessions?.map((gameSession)=>
-        {
-            if (gameSession.Status.Value)
-            {
-                gameSessionStats[gameSession.Status.Value]++;
-            }
-            gameSessionStats["TOTAL"]++;
-        });
         let instanceStats={"TOTAL":0, "ACTIVE":0, "PENDING":0, "TERMINATING":0};
         this._fleet.Instances?.map((instance)=>
         {
@@ -213,21 +204,19 @@ export class Fleet extends BaseContainer
             }
         })
 
-        if (this._fleet.Metrics==undefined)
-        {
-            this._fleet.Metrics={};
-        }
+        let activeGameSessionCount = this._fleet.FleetUtilization?.ActiveGameSessionCount ?? 0;
+        let activeServerProcessCount = this._fleet.FleetUtilization?.ActiveServerProcessCount ?? 0;
+        let availableGameSessions = activeServerProcessCount - activeGameSessionCount;
+        let percentAvailableGameSessions = activeServerProcessCount > 0 ? ((availableGameSessions / activeServerProcessCount) * 100).toFixed(1) : "-";
 
-        let percentAvailableGameSessions = this._fleet.Metrics["PercentAvailableGameSessions"] != undefined && this._fleet.Metrics["PercentAvailableGameSessions"]!=-1 ? this._fleet.Metrics["PercentAvailableGameSessions"] : "-";
-        let availableGameSessions = this._fleet.Metrics["AvailableGameSessions"] != undefined && this._fleet.Metrics["AvailableGameSessions"]!=-1 ? this._fleet.Metrics["AvailableGameSessions"] : "-";
-
-        this._statsText.text = "Percent Available Game Sessions: " + percentAvailableGameSessions + "\n";
+        this._statsText.text = "Total Game Sessions: " + activeServerProcessCount + "\n";
+        this._statsText.text += "Active Game Sessions: " + activeGameSessionCount + "\n";
         this._statsText.text += "Available Game Sessions: " + availableGameSessions + "\n";
+        this._statsText.text += "Percent Available Game Sessions: " + percentAvailableGameSessions + "\n";
+        this._statsText.text += "\n";
         this._statsText.text += "Total Instances: " + instanceStats["TOTAL"] + "\n";
         this._statsText.text += "Active Instances: " + instanceStats["ACTIVE"] + "\n";
         this._statsText.text += "Pending Instances: " + instanceStats["PENDING"] + "\n";
-        this._statsText.text += "Total Game Sessions: " + gameSessionStats["TOTAL"] + "\n";
-        this._statsText.text += "Active Game Sessions: " + gameSessionStats["ACTIVE"] + "\n";
         this._statsText.x = this.displayWidth/2;
         this._statsText.y = 100;
     }

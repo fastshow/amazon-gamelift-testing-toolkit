@@ -126,7 +126,7 @@ export class PlayerMatch extends BaseContainer
         console.log("OVER MATCH!", this.matchId, this.playerIds);
         this.playerIds.map(playerId =>
         {
-            PlayerManager.getPlayer(playerId).handleOver();
+            PlayerManager.getPlayer(playerId)?.handleOver();
         });
     };
 
@@ -184,9 +184,13 @@ export class PlayerMatch extends BaseContainer
         if (this._players[playerId])
         {
             this._players[playerId].storeEvent("REMOVING PLAYER FROM MATCH " + this._matchId);
-            PlayerManager.getPlayer(playerId).scale=1;
-            PlayerManager.getPlayer(playerId).unparentInPlace();
-            PlayerManager.getPlayer(playerId).playerState = PlayerState.WAITING_FOR_MATCH;
+            const player = PlayerManager.getPlayer(playerId);
+            if (player)
+            {
+                player.scale=1;
+                player.unparentInPlace();
+                player.playerState = PlayerState.WAITING_FOR_MATCH;
+            }
             delete this._players[playerId];
         }
     }
@@ -388,13 +392,17 @@ export class PlayerMatch extends BaseContainer
             {
                 this.playerIds.map((playerId)=>
                 {
-                    if (destinationX > this.x)
+                    const player = PlayerManager.getPlayer(playerId);
+                    if (player)
                     {
-                        PlayerManager.getPlayer(playerId).playAnimation("right");
-                    }
-                    else
-                    {
-                        PlayerManager.getPlayer(playerId).playAnimation("left");
+                        if (destinationX > this.x)
+                        {
+                            player.playAnimation("right");
+                        }
+                        else
+                        {
+                            player.playAnimation("left");
+                        }
                     }
                 })
             },
@@ -402,13 +410,17 @@ export class PlayerMatch extends BaseContainer
             {
                 this.playerIds.map((playerId)=>
                 {
-                    if (destinationY > this.y)
+                    const player = PlayerManager.getPlayer(playerId);
+                    if (player)
                     {
-                        PlayerManager.getPlayer(playerId).playAnimation("down");
-                    }
-                    else
-                    {
-                        PlayerManager.getPlayer(playerId).playAnimation("up");
+                        if (destinationY > this.y)
+                        {
+                            player.playAnimation("down");
+                        }
+                        else
+                        {
+                            player.playAnimation("up");
+                        }
                     }
                 })
             }
@@ -423,8 +435,12 @@ export class PlayerMatch extends BaseContainer
                 this._moving=false;
                 this.playerIds.map((playerId)=>
                 {
-                    PlayerManager.getPlayer(playerId).playAnimation("down");
-                    PlayerManager.getPlayer(playerId).stopAnimation();
+                    const player = PlayerManager.getPlayer(playerId);
+                    if (player)
+                    {
+                        player.playAnimation("down");
+                        player.stopAnimation();
+                    }
                 })
 
                 if (callback)
@@ -446,7 +462,11 @@ export class PlayerMatch extends BaseContainer
                     this.breakUpMatch();
                     playerIds.map((playerId)=>
                     {
-                        PlayerManager.getPlayer(playerId).alpha=0;
+                        const player = PlayerManager.getPlayer(playerId);
+                        if (player)
+                        {
+                            player.alpha=0;
+                        }
                         PlayerManager.removePlayer(playerId);
                     });
                 }
