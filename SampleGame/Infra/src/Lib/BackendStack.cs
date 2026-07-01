@@ -42,7 +42,7 @@ namespace SampleGameInfra.Lib
         public IdentityPool GameIdentityPool;
 
         public static string ProjectRoot = "../Backend";
-        public static string CodeRoot = ProjectRoot + "/bin/Release/net8.0";
+        public static string CodeRoot = ProjectRoot + "/bin/Release/net10.0";
         
         internal BackendStack(Construct scope, string id, BackendStackProps props) : base(scope, id, props)
         {    

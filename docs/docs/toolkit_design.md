@@ -16,7 +16,7 @@ The UI is implemented as a static website built with [Phaser](https://phaser.io/
 
 ### Management services and data
 
-The web console's functionality is provided by the management services. The services consist of an API Gateway WebSocket API, which uses [IAM authorization](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-control-access-iam.html) for access control and then calls a .NET 8 Lambda function.
+The web console's functionality is provided by the management services. The services consist of an API Gateway WebSocket API, which uses [IAM authorization](https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-control-access-iam.html) for access control and then calls a .NET 10 Lambda function.
 
 The Lambda function stores WebSocket connection details in a DynamoDB connections table. It then handles a variety of messages from the web console, interacting with a number of resources.
 
