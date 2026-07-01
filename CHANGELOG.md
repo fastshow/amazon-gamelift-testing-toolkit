@@ -7,6 +7,8 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-07-01
+
 ### Added
 
 - `global.json` pinning .NET SDK to 10.0.203 for reproducible builds
