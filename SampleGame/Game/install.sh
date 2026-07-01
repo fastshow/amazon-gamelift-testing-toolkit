@@ -1,7 +1,7 @@
 #!/bin/bash
 sudo dnf install -y 'dnf-command(config-manager)'
 
-sudo dnf install -y dotnet-sdk-8.0 openssl-libs unzip libicu git
+sudo dnf install -y dotnet-sdk-10.0 openssl-libs unzip libicu git
 
 sudo git clone --depth 1 --branch v5.4.0 https://github.com/amazon-gamelift/amazon-gamelift-servers-csharp-server-sdk.git aws-gamelift-sdk-temp
 sudo mkdir DLL

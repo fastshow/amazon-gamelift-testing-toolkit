@@ -9,13 +9,25 @@ and adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- `global.json` pinning .NET SDK to 8.0.420 for reproducible builds
+- `global.json` pinning .NET SDK to 10.0.203 for reproducible builds
 - `engines.node` field set to `>=18` in the UI package
 - Multi-stage Dockerfile for the sample game, reducing virtual-player container image size
 
 ### Changed
 
 #### Runtime & Framework
+
+- Management Console backend: .NET 8 → .NET 10 (`ManagementConsoleBackend.csproj`, `ManagementConsoleInfra.csproj`)
+- Sample game: .NET 8 → .NET 10 (`SampleGameInfra.csproj`, `SampleGameBackend.csproj`, `SampleGameBuild.csproj`)
+- Lambda runtime: `dotnet8` → `dotnet10` in both `aws-lambda-tools-defaults.json` files
+- CDK `Runtime.DOTNET_8` → `Runtime.DOTNET_10` in both `Program.cs` files
+- `global.json` pinned SDK: `8.0.420` → `10.0.203`
+- Sample game Dockerfile and `install.sh`: `dotnet-sdk-8.0` → `dotnet-sdk-10.0` (available in the Amazon Linux 2023 default `dnf` repositories)
+- All hardcoded `net8.0` build-output path references (`CodeRoot` in both `BackendStack.cs` files, `WebStack.cs`) updated to `net10.0`
+- GameLift Server SDK build **held at `net8.0`**: SDK v5.4.0 declares `net6.0;net462;net8.0` with no `net10.0` target, so the two `dotnet publish -c Release -f net8.0` SDK-build lines in the sample game `Dockerfile`/`install.sh` and `ServerSdkVersion "5.4.0"` are unchanged; the net8.0 SDK assembly loads under the net10.0 self-contained game server via .NET roll-forward
+- Removed the now-obsolete `AwsSolutions-L1` cdk-nag suppression from `SampleGame/Infra/src/Program.cs` (cdk-nag no longer flags `DOTNET_10` as non-latest)
+
+Previously (net6 → net8, retained for history):
 
 - Management Console backend: .NET 6 → .NET 8 (`ManagementConsoleBackend.csproj`, `ManagementConsoleInfra.csproj`)
 - Sample game: .NET 6 → .NET 8 (`SampleGameInfra.csproj`, `SampleGameBackend.csproj`, `SampleGameBuild.csproj`)
